@@ -6,9 +6,9 @@ import time
 import adafruit_dht
 import json
 import threading
-
-
-
+from parserJson.writeJson import writeJson
+import sensorTempHum
+import contPeopleRoom
 
 
 def pinsConfig(conf):
@@ -25,37 +25,6 @@ def pinsConfig(conf):
   GPIO.setup(conf['SPor'], GPIO.IN)
   GPIO.setup(conf['SC_IN'], GPIO.IN)
   GPIO.setup(conf['SC_OUT'], GPIO.IN)
-
-def tempHumidity(conf,obj):
-  try:
-    while True:
-      time.sleep(0.002)
-      if conf['DHT22'] == 18:
-         dht_device = adafruit_dht.DHT22(board.D18, False)
-      elif conf['DHT22'] == 4:
-         dht_device = adafruit_dht.DHT22(board.D4, False)
-      
-      temp = dht_device.temperature
-      hum = dht_device.humidity
-      obj['Temperatura'] = temp
-      obj['Humidade'] = hum
-  except:
-    tempHumidity(conf,obj)
-
-def peopleInRoom(conf,obj):
-  try:
-    count = 0
-    while True:
-      obj['Pessoas'] = str(count)
-      time.sleep(0.0001)
-      if GPIO.event_detected(conf['SC_IN']):
-          count +=1
-      if GPIO.event_detected(conf['SC_OUT']):
-          count -=1
-          if count < 0:
-            count = 0
-  except:
-    print('Erro ao contar pessoas')
 
 
 def statesAll(conf):
@@ -78,9 +47,9 @@ def statesAll(conf):
     }
     GPIO.add_event_detect(conf['SC_IN'], GPIO.RISING)
     GPIO.add_event_detect(conf['SC_OUT'], GPIO.RISING)
-    dhtThread = threading.Thread(target=tempHumidity, args=(conf,obj))
+    dhtThread = threading.Thread(target=sensorTempHum.tempHumidity, args=(conf,obj))
     dhtThread.start()
-    peopleInRoomThread = threading.Thread(target=peopleInRoom, args=(conf,obj))
+    peopleInRoomThread = threading.Thread(target=contPeopleRoom.peopleInRoom, args=(conf,obj))
     peopleInRoomThread.start()
 
 
@@ -130,8 +99,8 @@ def statesAll(conf):
         obj['SPor'] = 'ON'
       else:
         obj['SPor'] = 'OFF'
-        
-      with open('../jsons/statesSituation.json', 'w') as file:
-        json.dump(obj,file)
+      
+      writeJson(obj)
+
   except KeyboardInterrupt: 
     pass

@@ -5,8 +5,8 @@ import threading
 import controllerStates
 import socket
 import RPi.GPIO as GPIO
-from loadJson import loadJson
-from readFileConfigRoom import readFileConfigRoom
+from parserJson.loadJson import loadJson
+from parserJson.readFileConfigRoom import readFileConfigRoom
 
 def  onOneDisp(received_msg, conf, server):
   if received_msg[1] == '1':
