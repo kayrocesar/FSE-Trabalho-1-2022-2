@@ -1,0 +1,54 @@
+{
+    "sala01": [
+        {
+            "outputs": [
+                {
+                    "type": "lampada 01",
+                    "status": "OFF"
+                },
+                {
+                    "type": "lampada 02",
+                    "status": "OFF"
+                },
+                {
+                    "type": "projetor",
+                    "status": "OFF"
+                },
+                {
+                    "type": "ar-condicionado",
+                    "status": "ON"
+                },
+                {
+                    "type": "alarme",
+                    "status": "OFF"
+                }
+            ]
+        }
+    ],
+    "sala02": [
+        {
+            "outputs": [
+                {
+                    "type": "lampada 01",
+                    "status": "ON"
+                },
+                {
+                    "type": "lampada 02",
+                    "status": "ON"
+                },
+                {
+                    "type": "projetor",
+                    "status": "OFF"
+                },
+                {
+                    "type": "ar-condicionado",
+                    "status": "OFF"
+                },
+                {
+                    "type": "alarme",
+                    "status": "OFF"
+                }
+            ]
+        }
+    ]
+}
