@@ -4,6 +4,7 @@ import threading
 import json
 import RPi.GPIO as GPIO
 import time
+import os
 
 
 conns = {}
@@ -52,7 +53,7 @@ def getStatusDispAlter(conn):
         if resp == 'SUCESS':
             print('Estado do dispositivo alternado com sucesso!')
         elif resp == 'UNSUCCESSFULLY':
-            print('Houve um problema para trocar o estado do dispositivo!')
+            print('Problema para trocar o estado do dispositivo! Verifique se o estado desejado já não está em curso')
     except:
         print('Error getting status ')
     
@@ -90,8 +91,6 @@ def showStatusOutputs(conn):
     print('3- Ar-Condicionado (AC): '+statusOutputs['AC'])
     print('4- Projetor Multimídia (PR): '+statusOutputs['PR'])
     print('5- Alarme (AL_BZ): '+statusOutputs['AL_BZ'])
-    print('6- Ligar todos os dispositivos listados acima')
-    print('7- Desligar todos os dispositivos listados acima')
     print('\n')
   except:
     print('Erro ao obter o status das saidas!')
@@ -100,18 +99,25 @@ def showStatusOutputs(conn):
 def menu():
     opc=-1
     while int (opc)!=0:
+                os.system('clear')
                 print(' Servidor Central ')
-                print('0 - Sair ')
-                print('1 - Alterar o estado de um Dispositivo ')
-                print('2 - Verificar Status dos sensores e dispositivos ')
+                print('\n')
+                print('0- Sair ')
+                print('1- Ligar um Dispositivo ')
+                print('2- Desligar um Dispositivo ')
+                print('3- Ligar todos os dispositivos')
+                print('4- Desligar todos os dispositivos')
+                print('5- Verificar Status dos sensores e dispositivos ')
                 
                 opc= input('Escolha uma opção: ')
 
                 if  int (opc) == 0:
                         quit()
 
-                elif int(opc) == 1:
-                    if len(addresses_list) == 0:
+                elif int(opc) == 1: ## ON ONE DISP
+                    os.system('clear')
+                    t=len(addresses_list)
+                    if t == 0:
                             print('Nenhuma sala conectada ao servidor central')
                             input('Aperte enter para prosseguir...')
                             continue
@@ -123,32 +129,130 @@ def menu():
                                 print(f'Sala {i} - IP:{addresses_list[i]}')
                             r = int(input('Digite o numero da sala: '))
                     
-                    device = -1
-                    while device < 1 or device > 7:
+                    disp = 0
+                    while disp < 1 or disp > 5:
                            
                             print('-------- Dispositivos--------')
                             sendRequest(conns[addresses_list[r]], f'REQUEST_STATE')
                             showStatusOutputs(conns[addresses_list[r]])
-                            device = int(input('Digite o numero do dispositivo que deseja trocar o estado: '))
-                            if device == 1:
-                                sendRequest(conns[addresses_list[r]], f'1')
-                            elif device == 2:
-                                sendRequest(conns[addresses_list[r]], f'2')
-                            elif device == 3:
-                                sendRequest(conns[addresses_list[r]], f'3')
-                            elif device == 4:
-                                sendRequest(conns[addresses_list[r]], f'4')
-                            elif device == 5:
-                                sendRequest(conns[addresses_list[r]], f'5')
-                            elif device == 6:
-                                sendRequest(conns[addresses_list[r]], f'6')
-                            elif device == 7:
-                                sendRequest(conns[addresses_list[r]], f'7')
+                            disp = int(input('Digite o numero do dispositivo que deseja ligar: '))
+                            if disp == 1:
+                                sendRequest(conns[addresses_list[r]], f'A1')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 2:
+                                sendRequest(conns[addresses_list[r]], f'A2')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 3:
+                                sendRequest(conns[addresses_list[r]], f'A3')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 4:
+                                sendRequest(conns[addresses_list[r]], f'A4')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 5:
+                                sendRequest(conns[addresses_list[r]], f'A5')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            print('Retornando ao menu...')
+                            time.sleep(2)
+
+                elif int(opc) == 2: ## OFF ONE DISP
+                    os.system('clear')
+                    t=len(addresses_list)
+                    if t == 0:
+                            print('Nenhuma sala conectada ao servidor central')
+                            input('Aperte enter para prosseguir...')
+                            continue
+                    r = -1
+                    tam= len(addresses_list)
+                    while r < 0  or r > tam:
+                            print('Salas conectadas ao servidor central: ')
+                            for i in range(len(addresses_list)):
+                                print(f'Sala {i} - IP:{addresses_list[i]}')
+                            r = int(input('Digite o numero da sala: '))
+                    
+                    disp = 0
+                    while disp < 1 or disp > 5:
+                           
+                            print('-------- Dispositivos--------')
+                            sendRequest(conns[addresses_list[r]], f'REQUEST_STATE')
+                            showStatusOutputs(conns[addresses_list[r]])
+                            disp = int(input('Digite o numero do dispositivo que deseja desligar: '))
+                            if disp == 1:
+                                sendRequest(conns[addresses_list[r]], f'D1')
+                            elif disp == 2:
+                                sendRequest(conns[addresses_list[r]], f'D2')
+                            elif disp == 3:
+                                sendRequest(conns[addresses_list[r]], f'D3')
+                            elif disp == 4:
+                                sendRequest(conns[addresses_list[r]], f'D4')
+                            elif disp == 5:
+                                sendRequest(conns[addresses_list[r]], f'D5')
                             getStatusDispAlter(conns[addresses_list[r]])
                             print('Retornando ao menu...')
                             time.sleep(2)
+
+                elif int(opc) == 3: ## ON ALL DISP
+                    os.system('clear')
+                    t=len(addresses_list)
+                    if t == 0:
+                            print('Nenhuma sala conectada ao servidor central')
+                            input('Aperte enter para prosseguir...')
+                            continue
+                    r = -1
+                    tam= len(addresses_list)
+                    while r < 0  or r > tam:
+                            print('Salas conectadas ao servidor central: ')
+                            for i in range(len(addresses_list)):
+                                print(f'Sala {i} - IP:{addresses_list[i]}')
+                            r = int(input('Digite o numero da sala: '))
+                    
+                    disp = 0
+                    while disp < 1 or disp > 2:
+                           
+                            print('-------- Dispositivos--------')
+                            sendRequest(conns[addresses_list[r]], f'REQUEST_STATE')
+                            showStatusOutputs(conns[addresses_list[r]])
+                            disp = int(input('Tem certeza que deseja ligar todos os dispositivos? Digite 1 para confirmar ou 2 para cancelar '))
+                            if disp == 1:
+                                sendRequest(conns[addresses_list[r]], f'ONALL')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 2:
+                                pass
+                            print('Retornando ao menu...')
+                            time.sleep(2)
+
+
+                elif int(opc) == 4: ## OFF ALL DISP
+                    os.system('clear')
+                    t=len(addresses_list)
+                    if t == 0:
+                            print('Nenhuma sala conectada ao servidor central')
+                            input('Aperte enter para prosseguir...')
+                            continue
+                    r = -1
+                    tam= len(addresses_list)
+                    while r < 0  or r > tam:
+                            print('Salas conectadas ao servidor central: ')
+                            for i in range(len(addresses_list)):
+                                print(f'Sala {i} - IP:{addresses_list[i]}')
+                            r = int(input('Digite o numero da sala: '))
+                    
+                    disp = 0
+                    while disp < 1 or disp > 2:
+                           
+                            print('-------- Dispositivos--------')
+                            sendRequest(conns[addresses_list[r]], f'REQUEST_STATE')
+                            showStatusOutputs(conns[addresses_list[r]])
+                            disp = int(input('Tem certeza que deseja desligar todos os dispositivos? Digite 1 para confirmar ou 2 para cancelar '))
+                            if disp == 1:
+                                sendRequest(conns[addresses_list[r]], f'OFFALL')
+                                getStatusDispAlter(conns[addresses_list[r]])
+                            elif disp == 2:
+                                pass
+                            print('Retornando ao menu...')
+                            time.sleep(2)
         
-                elif int(opc) == 2:
+                elif int(opc) == 5:
+                    os.system('clear')
                     if not addresses_list:
                         print('Não foram encontradas salas conectadas ao servidor central!\n')
                         input('Pressione ENTER para prosseguir.....')

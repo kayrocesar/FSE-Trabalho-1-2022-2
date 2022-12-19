@@ -36,68 +36,105 @@ def handle(server, conf):
     while True:
       received_msg = server.recv(2048).decode('ascii')
       print (received_msg)
-      if received_msg.startswith('REQUEST_STATE'):
+      if received_msg == 'REQUEST_STATE':
+        #func fazer tratamento
         with open('../jsons/statesSituation.json', 'r') as openfile:
           json_object = json.load(openfile)
           msg_to_send = json.dumps(json_object).encode('ascii')
           server.send(msg_to_send)
 
-      if received_msg == '1':
+      if received_msg == 'A1':
+          if not GPIO.input(conf['L_01']):
+            GPIO.output(conf['L_01'], GPIO.HIGH)
+            server.send('SUCCESS'.encode('ascii'))
+            continue
+          else: 
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
+            continue
+
+      if received_msg == 'A2':
+          if not GPIO.input(conf['L_02']):
+            GPIO.output(conf['L_02'], GPIO.HIGH)
+            server.send('SUCCESS'.encode('ascii'))
+            continue
+          else: 
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
+            continue
+
+      if received_msg == 'A3':
+          if not GPIO.input(conf['AC']):
+            GPIO.output(conf['AC'], GPIO.HIGH)
+            server.send('SUCCESS'.encode('ascii'))
+            continue
+          else: 
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
+            continue
+
+      if received_msg == 'A4':
+          if not GPIO.input(conf['PR']):
+            GPIO.output(conf['PR'], GPIO.HIGH)
+            server.send('SUCCESS'.encode('ascii'))
+            continue
+          else: 
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
+            continue
+
+      if received_msg == 'A5':
+          if not GPIO.input(conf['AL_BZ']):
+            GPIO.output(conf['AL_BZ'], GPIO.HIGH)
+            server.send('SUCCESS'.encode('ascii'))
+            continue
+          else: 
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
+            continue
+
+       #OFF DISP
+      if received_msg == 'D1': 
           if GPIO.input(conf['L_01']):
             GPIO.output(conf['L_01'], GPIO.LOW)
             server.send('SUCCESS'.encode('ascii'))
             continue
           else: 
-          
-            GPIO.output(conf['L_01'] ,GPIO.HIGH)
-            server.send('SUCCESS'.encode('ascii'))
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
             continue
 
-      if received_msg == '2':
+      if received_msg == 'D2':
           if GPIO.input(conf['L_02']):
             GPIO.output(conf['L_02'], GPIO.LOW)
             server.send('SUCCESS'.encode('ascii'))
             continue
           else: 
-            
-            GPIO.output(conf['L_02'], GPIO.HIGH)
-            server.send('SUCCESS'.encode('ascii'))
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
             continue
 
-      if received_msg == '3':
-          if GPIO.input(conf['AC']):
+      if received_msg == 'D3':
+          if  GPIO.input(conf['AC']):
             GPIO.output(conf['AC'], GPIO.LOW)
             server.send('SUCCESS'.encode('ascii'))
             continue
           else: 
-            
-            GPIO.output(conf['AC'] ,GPIO.HIGH)
-            server.send('SUCCESS'.encode('ascii'))
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
             continue
 
-      if received_msg == '4':
-          if GPIO.input(conf['PR']):
+      if received_msg == 'D4':
+          if  GPIO.input(conf['PR']):
             GPIO.output(conf['PR'], GPIO.LOW)
             server.send('SUCCESS'.encode('ascii'))
             continue
           else: 
-            
-            GPIO.output(conf['PR'], GPIO.HIGH)
-            server.send('SUCCESS'.encode('ascii'))
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
             continue
 
-      if received_msg == '5':
+      if received_msg == 'D5':
           if GPIO.input(conf['AL_BZ']):
             GPIO.output(conf['AL_BZ'], GPIO.LOW)
             server.send('SUCCESS'.encode('ascii'))
             continue
           else: 
-            
-            GPIO.output(conf['AL_BZ'], GPIO.HIGH)
-            server.send('SUCCESS'.encode('ascii'))
+            server.send('UNSUCCESSFULLY'.encode('ascii'))
             continue
 
-      if received_msg == '6':
+      if received_msg == 'ONALL':
           try:
             GPIO.output(conf['L_01'] ,GPIO.HIGH)
             GPIO.output(conf['L_02'], GPIO.HIGH)
@@ -109,7 +146,7 @@ def handle(server, conf):
           except: 
             server.send('UNSUCCESSFULLY'.encode('ascii'))
 
-      if received_msg == '7':
+      if received_msg == 'OFFALL':
           try:
             GPIO.output(conf['L_01'], GPIO.LOW)
             GPIO.output(conf['L_02'] ,GPIO.LOW)
