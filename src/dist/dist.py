@@ -6,7 +6,7 @@ import controllerStates
 import socket
 import RPi.GPIO as GPIO
 from parserJson.loadJson import loadJson
-from parserJson.readFileConfigRoom import readFileConfigRoom
+from readFileConfigDist import readFileConfigDist
 
 def  onOneDisp(received_msg, conf, server):
   if received_msg[1] == '1':
@@ -109,8 +109,10 @@ def handle(server, conf):
       received_msg = server.recv(2048).decode('ascii')
       print (received_msg)
       if received_msg == 'REQUEST_STATE':
-        sendBack= loadJson()
-        server.send(sendBack)
+        threadLoad = threading.Thread(target=loadJson, args=()) 
+        threadLoad.start()
+        msg_back=loadJson()
+        server.send(msg_back)
 
       if received_msg[0] == 'A':
          onOneDisp(received_msg,conf, server )
@@ -128,7 +130,7 @@ def handle(server, conf):
 
 def main():
     
-    conf= readFileConfigRoom('../jsons/config-s04.json')
+    conf= readFileConfigDist('../jsons/config-s04.json')
 
     
     ip = conf['ip_servidor_central']
