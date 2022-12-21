@@ -6,7 +6,6 @@ import time
 import adafruit_dht
 import json
 import threading
-from parserJson.writeJson import writeJson
 import sensorTempHum
 import contPeopleRoom
 
@@ -100,7 +99,8 @@ def statesAll(conf):
       else:
         obj['SPor'] = 'OFF'
       
-      writeJson(obj)
+      with open('../jsons/statesSituation.json', 'w') as file:
+                 json.dump(obj,file) 
 
   except KeyboardInterrupt: 
     pass

@@ -5,7 +5,6 @@ import threading
 import controllerStates
 import socket
 import RPi.GPIO as GPIO
-from parserJson.loadJson import loadJson
 from readFileConfigDist import readFileConfigDist
 
 def  onOneDisp(received_msg, conf, server):
@@ -109,10 +108,11 @@ def handle(server, conf):
       received_msg = server.recv(2048).decode('ascii')
       print (received_msg)
       if received_msg == 'REQUEST_STATE':
-        threadLoad = threading.Thread(target=loadJson, args=()) 
-        threadLoad.start()
-        msg_back=loadJson()
-        server.send(msg_back)
+
+         with open('../jsons/statesSituation.json', 'r') as file:
+                jsonObj = json.load(file)
+                msg_back = json.dumps(jsonObj).encode('ascii')
+                server.send(msg_back)
 
       if received_msg[0] == 'A':
          onOneDisp(received_msg,conf, server )
