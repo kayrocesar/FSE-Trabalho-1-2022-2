@@ -13,16 +13,18 @@ Este trabalho tem por objetivo a criação de um sistema distribuído de automa�
 Configurar os arquivos de comunicação entre os servidores com base em qual placas os servidores irão rodar. (servidor central e distribuido)
 
 Modifique os arquivos config-s0X.json de acordo com a sua escolha,sendo X a configuração da sala presente no respectivo arquivo Json.
-O servidor central de todas as configurações  de salas está por padrão com o mesmo ip e o distribuido está configurado para sala 04 conforme o exemplo abaixo.
+O servidor central de todas as configurações  de salas está por padrão com o mesmo ip e o distribuido está configurado para sala 03 conforme o exemplo abaixo.
 
 ### Para Servidor Central
 
 O mesmo se encontra no diretório  e arquivo **src/ cent/ cent.py**  dentro da função principal conforme apresentado abaixo:
 
 ```python
-if __name__ == "__main__":
-    
-        conf= readFileConfigCent('../jsons/config-s04.json')
+def main():
+ 
+    try:
+       
+        conf= readFileConfigCent('../jsons/config-s03.json')
 ```
 
 ### Para Servidor Distribuido
@@ -31,9 +33,9 @@ O mesmo se encontra no diretório  e arquivo **src/ dist/ dist.py** entro da fun
 
 ```python
 
-if __name__ == "__main__":
-     
-    conf= readFileConfigDist('../jsons/config-s04.json')
+def main():
+    
+    conf= readFileConfigDist('../jsons/config-s03.json')
 ```
 
 ## Passo 2: Executar Servidor Central
