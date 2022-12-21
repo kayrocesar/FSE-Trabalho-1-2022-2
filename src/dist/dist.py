@@ -130,7 +130,7 @@ def handle(server, conf):
 
 def main():
     
-    conf= readFileConfigDist('../jsons/config-s04.json')
+    conf= readFileConfigDist('../jsons/config-s03.json')
 
     
     ip = conf['ip_servidor_central']

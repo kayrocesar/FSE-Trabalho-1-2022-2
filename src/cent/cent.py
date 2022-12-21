@@ -25,7 +25,7 @@ def getServers(s):
             conn, add = s.accept() 
             addresses_list.append(add[0]) 
             conns[add[0]] = conn 
-            print(f'{str(add)} Conectado!\n')
+            
     except:
         print('Error in Receive')
 
@@ -39,12 +39,20 @@ def getStatusDispAlter(conn):
     except:
         print('Error getting status ')
     
-
+def alarm(conn, s):
+        if s['SPor'] == 'ON'  or s['SPres'] == 'ON' or s['SFum'] == 'ON' or s['SJan'] == 'ON' and s['AL_BZ'] == 'OFF':
+                s['AL_BZ'] = 'ON'
+                sendRequest(conn, f'A5')
+        else:
+            pass
 
 def getStatusAll(conn):
   try:
     status = conn.recv(2048).decode('ascii')
     status = json.loads(status)
+
+    alarm(conn, status)
+
     print('--------Saidas--------: ')
     print('\n')
     print('Lâmpada 01 (L_01): '+status['L_01'])
@@ -69,6 +77,9 @@ def showStatusOutputs(conn):
   try:
     statusOutputs = conn.recv(2048).decode('ascii')
     statusOutputs = json.loads(statusOutputs)
+
+    alarm(conn, statusOutputs)
+
     print('\n')
     print('1- Lâmpada 01 (L_01) : '+statusOutputs['L_01'])
     print('2- Lâmpada 02 (L_02): '+statusOutputs['L_02'])
@@ -285,7 +296,7 @@ def main():
  
     try:
        
-        conf= readFileConfigCent('../jsons/config-s04.json')
+        conf= readFileConfigCent('../jsons/config-s03.json')
 
        
         ip = conf['ip_servidor_central']
